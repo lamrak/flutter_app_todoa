@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 const kLargeButtonTextStyle =
     TextStyle(fontSize: 20.0, fontWeight: FontWeight.bold, color: Colors.white);
 
-class BottomButton extends StatelessWidget {
-  BottomButton({required this.onTap, required this.title});
+class RoundedButton extends StatelessWidget {
+  RoundedButton({required this.onTap, required this.title});
 
   final Function onTap;
   final String title;
@@ -24,8 +24,7 @@ class BottomButton extends StatelessWidget {
         height: 70.0,
         decoration: BoxDecoration(
           color: Colors.deepOrange,
-          borderRadius: BorderRadius.only(
-              topLeft: Radius.circular(20.0), topRight: Radius.circular(20.0)),
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
         ),
       ),
     );

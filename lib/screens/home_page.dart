@@ -3,17 +3,21 @@ import 'package:flutter_app_todoa/components/bottom_button.dart';
 import 'package:flutter_app_todoa/model/item_data.dart';
 import 'package:flutter_app_todoa/widgets/tile_item.dart';
 
+import 'add_task_page.dart';
+
 class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      body: Column(
-        children: [
-          _buildTopBar(context),
-          _buildBodyContent(),
-          // _buildBottomBar()
-        ],
+    return SafeArea(
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        body: Column(
+          children: [
+            _buildTopBar(context),
+            _buildBodyContent(),
+            _buildBottomBar(context)
+          ],
+        ),
       ),
     );
   }
@@ -45,6 +49,15 @@ class HomePage extends StatelessWidget {
             ),
           ),
         ),
+        Positioned(
+          left: 20,
+          top: 37,
+          child: Text(
+            'TODOa',
+            style: TextStyle(
+                color: Colors.white, fontSize: 46, fontWeight: FontWeight.w700),
+          ),
+        ),
       ],
     );
   }
@@ -53,7 +66,7 @@ class HomePage extends StatelessWidget {
     List<ItemData> items = [
       ItemData(
         isChecked: true,
-        image: 'assfixedLengthListets/avatar_holder.png',
+        image: 'assets/avatar_holder.png',
         title: 'Item Text 0',
       ),
       ItemData(
@@ -104,7 +117,21 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomBar() {
-    return BottomButton(buttonTitle: 'Add Item', onTap: () {});
+  Widget _buildBottomBar(BuildContext context) {
+    return BottomButton(
+        title: 'Add Item',
+        onTap: () {
+          showModalBottomSheet<void>(
+            context: context,
+            isScrollControlled: true,
+            builder: (BuildContext context) {
+              return Container(
+                height: 220,
+                color: Color(0xff757575),
+                child: AddTaskPage(),
+              );
+            },
+          );
+        });
   }
 }
