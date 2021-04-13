@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_app_todoa/components/bottom_button.dart';
 import 'package:flutter_app_todoa/model/item_data.dart';
 import 'package:flutter_app_todoa/widgets/tile_item.dart';
 
@@ -11,6 +12,7 @@ class HomePage extends StatelessWidget {
         children: [
           _buildTopBar(context),
           _buildBodyContent(),
+          // _buildBottomBar()
         ],
       ),
     );
@@ -51,8 +53,23 @@ class HomePage extends StatelessWidget {
     List<ItemData> items = [
       ItemData(
         isChecked: true,
-        image: 'assets/avatar_holder.png',
+        image: 'assfixedLengthListets/avatar_holder.png',
         title: 'Item Text 0',
+      ),
+      ItemData(
+        isChecked: false,
+        image: 'assets/avatar_holder.png',
+        title: 'Item Text 1',
+      ),
+      ItemData(
+        isChecked: true,
+        image: null,
+        title: 'Item Text 2',
+      ),
+      ItemData(
+        isChecked: false,
+        image: 'assets/avatar_holder.png',
+        title: 'Item Text 3',
       ),
       ItemData(
         isChecked: false,
@@ -71,9 +88,7 @@ class HomePage extends StatelessWidget {
       )
     ];
 
-    return Container(
-      width: double.infinity,
-      height: 560,
+    return Expanded(
       child: ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index) {
@@ -87,5 +102,9 @@ class HomePage extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Widget _buildBottomBar() {
+    return BottomButton(buttonTitle: 'Add Item', onTap: () {});
   }
 }
