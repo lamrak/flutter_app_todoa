@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/bottom_button.dart';
-import 'package:flutter_app_todoa/model/item_data.dart';
+import 'package:flutter_app_todoa/items_collection.dart';
 import 'package:flutter_app_todoa/widgets/tile_item.dart';
+import 'package:provider/provider.dart';
 
 import 'add_task_page.dart';
 
@@ -14,7 +15,7 @@ class HomePage extends StatelessWidget {
         body: Column(
           children: [
             _buildTopBar(context),
-            _buildBodyContent(),
+            _buildBodyContent(context),
             _buildBottomBar(context)
           ],
         ),
@@ -62,58 +63,26 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  Widget _buildBodyContent() {
-    List<ItemData> items = [
-      ItemData(
-        isChecked: true,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 0',
-      ),
-      ItemData(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 1',
-      ),
-      ItemData(
-        isChecked: true,
-        image: null,
-        title: 'Item Text 2',
-      ),
-      ItemData(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 3',
-      ),
-      ItemData(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 1',
-      ),
-      ItemData(
-        isChecked: true,
-        image: null,
-        title: 'Item Text 2',
-      ),
-      ItemData(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 3',
-      )
-    ];
-
+  Widget _buildBodyContent(BuildContext context) {
     return Expanded(
-      child: ListView.builder(
-        itemCount: items.length,
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: TileItem(
-              isChecked: items[index].isChecked,
-              title: items[index].title,
-              image: items[index].image,
-            ),
-          );
-        },
-      ),
+      child: Consumer(builder: (context, ItemsCollection items, child) {
+        return ListView.builder(
+          itemCount: items.length(),
+          itemBuilder: (context, index) {
+            final item = items.get(index);
+            return ListTile(
+              title: TileItem(
+                isChecked: item.isChecked,
+                title: item.title,
+                image: item.image,
+                onCheckedChanges: (bool isChecked) {
+                  items.updateItem(item);
+                },
+              ),
+            );
+          },
+        );
+      }),
     );
   }
 

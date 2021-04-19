@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/rounded_button.dart';
+import 'package:flutter_app_todoa/items_collection.dart';
+import 'package:provider/provider.dart';
 
 class AddTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String newTaskTitle;
+    String newTaskTitle = '';
 
     return Container(
       padding: EdgeInsets.only(left: 20.0, right: 20.0),
@@ -41,6 +43,11 @@ class AddTaskPage extends StatelessWidget {
           RoundedButton(
             title: 'Add',
             onTap: () {
+              if (newTaskTitle.isEmpty) {
+                return;
+              }
+              Provider.of<ItemsCollection>(context, listen: false)
+                  .addItem(newTaskTitle);
               Navigator.pop(context);
             },
           ),

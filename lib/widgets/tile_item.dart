@@ -5,10 +5,13 @@ class TileItem extends StatelessWidget {
   final String? image;
   final String title;
 
+  final Function onCheckedChanges;
+
   TileItem({
     this.isChecked = false,
     required this.title,
     this.image,
+    required this.onCheckedChanges,
   });
 
   @override
@@ -21,7 +24,9 @@ class TileItem extends StatelessWidget {
         children: [
           Checkbox(
             value: isChecked,
-            onChanged: (bool? value) {},
+            onChanged: (bool? value) {
+              onCheckedChanges(value ?? false);
+            },
           ),
           Container(
             margin: EdgeInsets.all(12.0),
@@ -52,15 +57,27 @@ class TileItem extends StatelessWidget {
                 : null,
           ),
           Expanded(
-            child: Text(
-              title,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: TextStyle(fontSize: 24),
-            ),
+            child: isChecked ? showStrokedText() : showNormalText(),
           )
         ],
       ),
     );
   }
+
+  showStrokedText() => Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(
+            fontSize: 24,
+            color: Colors.grey,
+            decoration: TextDecoration.lineThrough),
+      );
+
+  showNormalText() => Text(
+        title,
+        maxLines: 1,
+        overflow: TextOverflow.ellipsis,
+        style: TextStyle(fontSize: 24),
+      );
 }
