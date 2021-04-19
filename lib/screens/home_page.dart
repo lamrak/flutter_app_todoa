@@ -1,3 +1,4 @@
+import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/bottom_button.dart';
 import 'package:flutter_app_todoa/items_collection.dart';
@@ -24,6 +25,20 @@ class HomePage extends StatelessWidget {
   }
 
   Stack _buildTopBar(BuildContext context) {
+    const colorizeColors = [
+      Colors.white,
+      Colors.purple,
+      Colors.blue,
+      Colors.yellow,
+      Colors.red,
+    ];
+
+    const colorizeTextStyle = TextStyle(
+      fontSize: 46.0,
+      fontFamily: 'RobotoMono',
+      fontWeight: FontWeight.w800,
+    );
+
     return Stack(
       children: [
         Container(
@@ -52,11 +67,20 @@ class HomePage extends StatelessWidget {
         ),
         Positioned(
           left: 20,
-          top: 37,
-          child: Text(
-            'TODOa',
-            style: TextStyle(
-                color: Colors.white, fontSize: 46, fontWeight: FontWeight.w700),
+          top: 34,
+          child: SizedBox(
+            width: 250.0,
+            child: AnimatedTextKit(
+              animatedTexts: [
+                ColorizeAnimatedText(
+                  'TODOa',
+                  textStyle: colorizeTextStyle,
+                  colors: colorizeColors,
+                  speed: const Duration(seconds: 3),
+                ),
+              ],
+              isRepeatingAnimation: false,
+            ),
           ),
         ),
       ],
