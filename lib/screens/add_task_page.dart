@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/rounded_button.dart';
+import 'package:flutter_app_todoa/data/data_collection.dart';
+import 'package:provider/provider.dart';
 
 class AddTaskPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    String newTaskTitle;
+    String newToDoTitle = '';
 
     return Container(
       padding: EdgeInsets.only(left: 20.0, right: 20.0),
@@ -32,7 +34,7 @@ class AddTaskPage extends StatelessWidget {
             autofocus: true,
             textAlign: TextAlign.center,
             onChanged: (newText) {
-              newTaskTitle = newText;
+              newToDoTitle = newText;
             },
           ),
           SizedBox(
@@ -41,6 +43,10 @@ class AddTaskPage extends StatelessWidget {
           RoundedButton(
             title: 'Add',
             onTap: () {
+              if (newToDoTitle.isNotEmpty) {
+                Provider.of<DataCollection>(context, listen: false)
+                    .addToDo(newToDoTitle);
+              }
               Navigator.pop(context);
             },
           ),
