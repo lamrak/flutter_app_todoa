@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/rounded_button.dart';
-import 'package:flutter_app_todoa/items_collection.dart';
+import 'package:flutter_app_todoa/todos_collection.dart';
 import 'package:provider/provider.dart';
 
 class AddTaskPage extends StatelessWidget {
@@ -46,7 +46,7 @@ class AddTaskPage extends StatelessWidget {
               if (newTaskTitle.isEmpty) {
                 return;
               }
-              Provider.of<ItemsCollection>(context, listen: false)
+              Provider.of<TodosCollection>(context, listen: false)
                   .addItem(newTaskTitle);
               Navigator.pop(context);
             },

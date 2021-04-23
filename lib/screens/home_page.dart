@@ -1,13 +1,44 @@
 import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/bottom_button.dart';
-import 'package:flutter_app_todoa/items_collection.dart';
+import 'package:flutter_app_todoa/todos_collection.dart';
 import 'package:flutter_app_todoa/widgets/tile_item.dart';
 import 'package:provider/provider.dart';
 
 import 'add_task_page.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late final dynamic data;
+
+  Future<dynamic> getData() async {
+    final Stream<QuerySnapshot> document =
+        _firestore.collection("todos_collection").snapshots();
+
+    document.forEach((QuerySnapshot snapshot) async {
+      snapshot.docs.forEach((DocumentSnapshot docs) async {
+        List list = docs.data()!['todos'];
+
+        print(list);
+      });
+    });
+
+    print('');
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    getData();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -89,7 +120,7 @@ class HomePage extends StatelessWidget {
 
   Widget _buildBodyContent(BuildContext context) {
     return Expanded(
-      child: Consumer(builder: (context, ItemsCollection items, child) {
+      child: Consumer(builder: (context, TodosCollection items, child) {
         return ListView.builder(
           itemCount: items.length(),
           itemBuilder: (context, index) {
