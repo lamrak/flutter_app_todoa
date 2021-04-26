@@ -3,13 +3,13 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/bottom_button.dart';
 import 'package:flutter_app_todoa/constants.dart';
+import 'package:flutter_app_todoa/data/firestore_repository.dart';
 import 'package:flutter_app_todoa/widgets/tile_item.dart';
+import 'package:provider/provider.dart';
 
 import 'add_task_page.dart';
 
 class HomePage extends StatelessWidget {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -78,7 +78,8 @@ class HomePage extends StatelessWidget {
   Widget _buildBodyContent(BuildContext context) {
     return Expanded(
       child: StreamBuilder(
-        stream: _firestore.collection("gym").snapshots(),
+        stream:
+            Provider.of<FirestoreRepository>(context, listen: false).steam(),
         builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
           List<TileItem> widgets = [];
           if (snapshot.hasData) {
@@ -94,10 +95,8 @@ class HomePage extends StatelessWidget {
                 title: title,
                 image: null,
                 onCheckedChanges: (bool isChecked) {
-                  _firestore
-                      .collection('gym')
-                      .doc(id)
-                      .update({'isSelected': isChecked});
+                  Provider.of<FirestoreRepository>(context, listen: false)
+                      .update(id, isChecked);
                 },
               ));
             });

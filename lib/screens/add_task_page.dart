@@ -1,10 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/rounded_button.dart';
+import 'package:flutter_app_todoa/data/firestore_repository.dart';
+import 'package:provider/provider.dart';
 
 class AddTaskPage extends StatelessWidget {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
   @override
   Widget build(BuildContext context) {
     String newTaskTitle = '';
@@ -48,9 +47,8 @@ class AddTaskPage extends StatelessWidget {
                 return;
               }
 
-              _firestore
-                  .collection('gym')
-                  .add({'todo': newTaskTitle, 'isSelected': false});
+              Provider.of<FirestoreRepository>(context, listen: false)
+                  .add(newTaskTitle);
 
               Navigator.pop(context);
             },
