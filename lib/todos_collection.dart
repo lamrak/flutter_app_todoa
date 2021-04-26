@@ -1,32 +1,11 @@
+import 'dart:collection';
+
 import 'package:flutter/material.dart';
 
 import 'model/todo_item.dart';
 
 class TodosCollection extends ChangeNotifier {
-  List<TodoItem> _items = [
-    TodoItem(
-        isChecked: true,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 0'),
-    TodoItem(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 1'),
-    TodoItem(isChecked: true, image: null, title: 'Item Text 2'),
-    TodoItem(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 3'),
-    TodoItem(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 1'),
-    TodoItem(isChecked: true, image: null, title: 'Item Text 2'),
-    TodoItem(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 3')
-  ];
+  List<TodoItem> _items = [];
 
   int length() => _items.length;
 
@@ -43,5 +22,9 @@ class TodosCollection extends ChangeNotifier {
     item.isChecked = !item.isChecked;
 
     notifyListeners();
+  }
+
+  List<String> getAll() {
+    return UnmodifiableListView(_items.map((e) => e.title));
   }
 }

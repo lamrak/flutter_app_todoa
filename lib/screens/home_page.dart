@@ -2,42 +2,13 @@ import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/bottom_button.dart';
-import 'package:flutter_app_todoa/todos_collection.dart';
+import 'package:flutter_app_todoa/constants.dart';
 import 'package:flutter_app_todoa/widgets/tile_item.dart';
-import 'package:provider/provider.dart';
 
 import 'add_task_page.dart';
 
-class HomePage extends StatefulWidget {
-  @override
-  _HomePageState createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+class HomePage extends StatelessWidget {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  late final dynamic data;
-
-  Future<dynamic> getData() async {
-    final Stream<QuerySnapshot> document =
-        _firestore.collection("todos_collection").snapshots();
-
-    document.forEach((QuerySnapshot snapshot) async {
-      snapshot.docs.forEach((DocumentSnapshot docs) async {
-        List list = docs.data()!['todos'];
-
-        print(list);
-      });
-    });
-
-    print('');
-  }
-
-  @override
-  void initState() {
-    super.initState();
-
-    getData();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -56,20 +27,6 @@ class _HomePageState extends State<HomePage> {
   }
 
   Stack _buildTopBar(BuildContext context) {
-    const colorizeColors = [
-      Colors.white,
-      Colors.purple,
-      Colors.blue,
-      Colors.yellow,
-      Colors.red,
-    ];
-
-    const colorizeTextStyle = TextStyle(
-      fontSize: 46.0,
-      fontFamily: 'RobotoMono',
-      fontWeight: FontWeight.w800,
-    );
-
     return Stack(
       children: [
         Container(
@@ -105,8 +62,8 @@ class _HomePageState extends State<HomePage> {
               animatedTexts: [
                 ColorizeAnimatedText(
                   'TODOa',
-                  textStyle: colorizeTextStyle,
-                  colors: colorizeColors,
+                  textStyle: kColorizeTextStyle,
+                  colors: kColorizeColors,
                   speed: const Duration(seconds: 3),
                 ),
               ],
@@ -120,24 +77,37 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBodyContent(BuildContext context) {
     return Expanded(
-      child: Consumer(builder: (context, TodosCollection items, child) {
-        return ListView.builder(
-          itemCount: items.length(),
-          itemBuilder: (context, index) {
-            final item = items.get(index);
-            return ListTile(
-              title: TileItem(
-                isChecked: item.isChecked,
-                title: item.title,
-                image: item.image,
+      child: StreamBuilder(
+        stream: _firestore.collection("gym").snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          List<TileItem> widgets = [];
+          if (snapshot.hasData) {
+            snapshot.data!.docs.forEach((QueryDocumentSnapshot query) {
+              final id = query.id;
+              Map<String, dynamic> data = query.data();
+
+              final bool isSelected = data['isSelected'];
+              final title = data['todo'];
+
+              widgets.add(TileItem(
+                isChecked: isSelected,
+                title: title,
+                image: null,
                 onCheckedChanges: (bool isChecked) {
-                  items.updateItem(item);
+                  _firestore
+                      .collection('gym')
+                      .doc(id)
+                      .update({'isSelected': isChecked});
                 },
-              ),
-            );
-          },
-        );
-      }),
+              ));
+            });
+          }
+
+          return ListView(
+            children: widgets,
+          );
+        },
+      ),
     );
   }
 
