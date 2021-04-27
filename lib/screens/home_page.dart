@@ -14,29 +14,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late final dynamic data;
-
-  Future<dynamic> getData() async {
-    final Stream<QuerySnapshot> document =
-        _firestore.collection("todos_collection").snapshots();
-
-    document.forEach((QuerySnapshot snapshot) async {
-      snapshot.docs.forEach((DocumentSnapshot docs) async {
-        List list = docs.data()!['todos'];
-
-        print(list);
-      });
-    });
-
-    print('');
-  }
 
   @override
   void initState() {
     super.initState();
-
-    getData();
   }
 
   @override
@@ -120,24 +102,39 @@ class _HomePageState extends State<HomePage> {
 
   Widget _buildBodyContent(BuildContext context) {
     return Expanded(
-      child: Consumer(builder: (context, TodosCollection items, child) {
-        return ListView.builder(
-          itemCount: items.length(),
-          itemBuilder: (context, index) {
-            final item = items.get(index);
-            return ListTile(
-              title: TileItem(
-                isChecked: item.isChecked,
-                title: item.title,
-                image: item.image,
-                onCheckedChanges: (bool isChecked) {
-                  items.updateItem(item);
-                },
-              ),
+      child: StreamBuilder(
+        stream: Provider.of<TodosCollection>(context).getCollectionAsSteam(),
+        builder: (BuildContext context, AsyncSnapshot<dynamic> asyncSnapshot) {
+          if (!asyncSnapshot.hasData) {
+            return Center(
+              child: Text('Loading....'),
             );
-          },
-        );
-      }),
+          }
+
+          List<Widget> todoWidgets = [];
+          asyncSnapshot.data.docs.forEach((DocumentSnapshot docs) {
+            final id = docs.id;
+
+            bool isSelected = docs.data()!['isSelected'];
+            String title = docs.data()!['todo'];
+
+            final item = TileItem(
+              title: title,
+              isChecked: isSelected,
+              onCheckedChanges: (bool isChecked) {
+                Provider.of<TodosCollection>(context)
+                    .updateItem(id, isSelected, title);
+              },
+            );
+
+            todoWidgets.add(item);
+          });
+
+          return ListView(
+            children: todoWidgets,
+          );
+        },
+      ),
     );
   }
 

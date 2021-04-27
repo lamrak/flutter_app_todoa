@@ -1,47 +1,21 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-import 'model/todo_item.dart';
-
 class TodosCollection extends ChangeNotifier {
-  List<TodoItem> _items = [
-    TodoItem(
-        isChecked: true,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 0'),
-    TodoItem(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 1'),
-    TodoItem(isChecked: true, image: null, title: 'Item Text 2'),
-    TodoItem(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 3'),
-    TodoItem(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 1'),
-    TodoItem(isChecked: true, image: null, title: 'Item Text 2'),
-    TodoItem(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Item Text 3')
-  ];
-
-  int length() => _items.length;
-
-  TodoItem get(int pos) {
-    return _items[pos];
-  }
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   void addItem(String title) {
-    _items.insert(0, TodoItem(isChecked: false, image: null, title: title));
-    notifyListeners();
+    _firestore.collection('gym').add({
+      'todo': title,
+      'isSelected': false,
+    });
   }
 
-  void updateItem(TodoItem item) {
-    item.isChecked = !item.isChecked;
-
-    notifyListeners();
+  void updateItem(String id, bool isSelected, String title) {
+    _firestore.collection('gym').doc(id).update({
+      'isSelected': isSelected,
+    });
   }
+
+  getCollectionAsSteam() => _firestore.collection('gym').snapshots();
 }

@@ -1,9 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/components/rounded_button.dart';
-import 'package:flutter_app_todoa/todos_collection.dart';
 import 'package:provider/provider.dart';
 
+import '../todos_collection.dart';
+
 class AddTaskPage extends StatelessWidget {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     String newTaskTitle = '';
@@ -48,6 +52,7 @@ class AddTaskPage extends StatelessWidget {
               }
               Provider.of<TodosCollection>(context, listen: false)
                   .addItem(newTaskTitle);
+
               Navigator.pop(context);
             },
           ),
