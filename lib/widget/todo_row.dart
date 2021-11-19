@@ -33,12 +33,17 @@ class ToDoRow extends StatelessWidget {
             ],
           ),
         ),
-        Container(
-            margin: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 0.0),
-            child: Text(
-              title,
-              style: const TextStyle(fontSize: 24),
-            ))
+        Flexible(
+          child: Container(
+              margin:
+                  const EdgeInsets.symmetric(horizontal: 12.0, vertical: 0.0),
+              child: Text(
+                title,
+                // overflow: TextOverflow.ellipsis,
+                maxLines: 2,
+                style: const TextStyle(fontSize: 24),
+              )),
+        )
       ],
     );
   }
