@@ -1,7 +1,16 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/widget/rounded_button.dart';
 
-class AddTaskPage extends StatelessWidget {
+class AddTaskPage extends StatefulWidget {
+  @override
+  State<AddTaskPage> createState() => _AddTaskPageState();
+}
+
+class _AddTaskPageState extends State<AddTaskPage> {
+  final firestore = FirebaseFirestore.instance;
+  var newTitle = '';
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -29,7 +38,11 @@ class AddTaskPage extends StatelessWidget {
           TextField(
             autofocus: true,
             textAlign: TextAlign.center,
-            onChanged: (newText) {},
+            onChanged: (newText) {
+              setState(() {
+                this.newTitle = newText;
+              });
+            },
           ),
           SizedBox(
             height: 20.0,
@@ -37,6 +50,13 @@ class AddTaskPage extends StatelessWidget {
           RoundedButton(
             title: 'Add',
             onTap: () {
+              firestore.collection('todos').add({
+                'title': newTitle,
+                'image':
+                    'https://firebasestorage.googleapis.com/v0/b/todoa-5403a.appspot.com/o/todo.png?alt=media&token=e585808f-3405-4004-9f4a-3fc5ee42fa19',
+                'isChecked': false,
+              });
+
               Navigator.pop(context);
             },
           ),

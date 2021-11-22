@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_app_todoa/model/item_data.dart';
 import 'package:flutter_app_todoa/screens/add_task_page.dart';
@@ -8,6 +9,8 @@ import 'package:flutter_app_todoa/widget/todo_row.dart';
 class HomePage extends StatelessWidget {
   HomePage({Key key}) : super(key: key);
 
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -15,49 +18,47 @@ class HomePage extends StatelessWidget {
         appBar: AppBar(
           title: Text('ToDoa'),
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            _buildBodyContent(),
-            _buildBottomBar(context),
-          ],
-        ), // This trailing comma makes auto-formatting nicer for build methods.
+        body: StreamBuilder(
+          stream: _firestore.collection("todos").snapshots(),
+          builder:
+              (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+            List<ItemData> items = [];
+            if (snapshot.hasData) {
+              snapshot.data.docs.forEach((QueryDocumentSnapshot query) {
+                Map<String, dynamic> data = query.data();
+
+                items.add(ItemData(
+                  title: data['title'],
+                  image: data['image'],
+                  isChecked: data['isChecked'],
+                ));
+              });
+            }
+
+            if (items.isEmpty) {
+              return Center(
+                child: Text('No todos'),
+              );
+            } else {
+              return Stack(
+                children: [
+                  _buildBodyContent(items),
+                  _buildBottomBar(context),
+                ],
+              );
+            }
+          },
+        ),
       ),
     );
   }
 
-  Widget _buildBodyContent() {
-    List<ItemData> items = [
-      ItemData(
-        isChecked: true,
-        image: 'assets/avatar_holder.png',
-        title: 'Math',
-      ),
-      ItemData(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Architecture',
-      ),
-      ItemData(
-        isChecked: true,
-        image: null,
-        title: 'Biology',
-      ),
-      ItemData(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Flutter',
-      ),
-      ItemData(
-        isChecked: false,
-        image: 'assets/avatar_holder.png',
-        title: 'Artificial Intelligences',
-      ),
-    ];
-
-    return Container(
-      width: double.infinity,
-      height: 560,
+  Widget _buildBodyContent(List<ItemData> items) {
+    return Positioned(
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
       child: ListView.builder(
         itemCount: items.length,
         itemBuilder: (context, index) {
@@ -75,7 +76,7 @@ class HomePage extends StatelessWidget {
             },
             child: ListTile(
               title: ToDoRow(
-                title: items[index].title,
+                item: items[index],
               ),
             ),
           );
@@ -85,20 +86,25 @@ class HomePage extends StatelessWidget {
   }
 
   Widget _buildBottomBar(BuildContext context) {
-    return BottomButton(
-        title: 'Add Item',
-        onTap: () {
-          showModalBottomSheet<void>(
-            context: context,
-            isScrollControlled: true,
-            builder: (BuildContext context) {
-              return Container(
-                height: 220,
-                color: Color(0xff757575),
-                child: AddTaskPage(),
-              );
-            },
-          );
-        });
+    return Positioned(
+      bottom: 0,
+      left: 0,
+      right: 0,
+      child: BottomButton(
+          title: 'Add Item',
+          onTap: () {
+            showModalBottomSheet<void>(
+              context: context,
+              isScrollControlled: true,
+              builder: (BuildContext context) {
+                return Container(
+                  height: 220,
+                  color: Color(0xff757575),
+                  child: AddTaskPage(),
+                );
+              },
+            );
+          }),
+    );
   }
 }
