@@ -1,6 +1,7 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_app_todoa/widget/rounded_button.dart';
+import 'package:flutter_app_todoa/domain/repository/todo_repository.dart';
+import 'package:flutter_app_todoa/presentation/widget/rounded_button.dart';
+import 'package:provider/provider.dart';
 
 class AddTaskPage extends StatefulWidget {
   @override
@@ -8,7 +9,6 @@ class AddTaskPage extends StatefulWidget {
 }
 
 class _AddTaskPageState extends State<AddTaskPage> {
-  final firestore = FirebaseFirestore.instance;
   var newTitle = '';
 
   @override
@@ -50,12 +50,8 @@ class _AddTaskPageState extends State<AddTaskPage> {
           RoundedButton(
             title: 'Add',
             onTap: () {
-              firestore.collection('todos').add({
-                'title': newTitle,
-                'image':
-                    'https://firebasestorage.googleapis.com/v0/b/todoa-5403a.appspot.com/o/todo.png?alt=media&token=e585808f-3405-4004-9f4a-3fc5ee42fa19',
-                'isChecked': false,
-              });
+              Provider.of<TodoRepository>(context, listen: false)
+                  .addTodo(newTitle);
 
               Navigator.pop(context);
             },

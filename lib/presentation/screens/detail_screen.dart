@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_todoa/model/item_data.dart';
+import 'package:flutter_app_todoa/domain/model/models.dart';
 
 class DetailScreen extends StatelessWidget {
   const DetailScreen({Key key, this.itemData}) : super(key: key);

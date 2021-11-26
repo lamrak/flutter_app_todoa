@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_app_todoa/model/item_data.dart';
+import 'package:flutter_app_todoa/domain/model/models.dart';
+import 'package:flutter_app_todoa/domain/repository/todo_repository.dart';
+import 'package:provider/provider.dart';
 
 class ToDoRow extends StatelessWidget {
   final ItemData item;
@@ -15,7 +17,10 @@ class ToDoRow extends StatelessWidget {
       children: [
         Checkbox(
           value: item.isChecked,
-          onChanged: (bool value) {},
+          onChanged: (bool isSelected) {
+            Provider.of<TodoRepository>(context, listen: false)
+                .updateTodo(item.id, isSelected);
+          },
         ),
         Image.network(
           item.image,
